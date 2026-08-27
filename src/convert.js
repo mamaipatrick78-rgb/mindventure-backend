@@ -54,4 +54,10 @@ export async function convertAsset({ userId, fromAsset, toAsset, fromAmount, pri
 
     await client.query('COMMIT');
     return { ok: true, trade: trade.rows[0] };
-  } catch (e
+  } catch (e) {
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    client.release();
+  }
+}
